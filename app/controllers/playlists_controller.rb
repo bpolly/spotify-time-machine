@@ -7,6 +7,7 @@ class PlaylistsController < ApplicationController
 
   def show
     @playlist = Playlist.find(params[:id])
+    @songs = PlaylistVersionSong.includes(song: :artists).where(playlist_version: @playlist.versions.last).order(position: :asc)
 
     breadcrumb @playlist.name, playlist_path(@playlist)
   end

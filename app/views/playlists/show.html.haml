@@ -5,14 +5,14 @@
         .column.is-full-desktop.is-one-fifth-tablet.is-one-fifth-mobile
           .box.no-padding
             %figure.image
-              %img{ src: @playlist.playlist_versions.last.artwork_url }
+              %img{ src: @playlist.versions.last.artwork_url }
         .column.is-full-desktop.is-four-fifths-tablet.is-four-fifths-mobile
           .box#playlist-info-box
             %h1= @playlist.name
     .column
       .box
         %table#songs-table.table.is-fullwidth
-          - @playlist.playlist_versions.last.songs.each do |song|
+          - @songs.each do |song|
             %tr
               %td
                 %img.song-list-artwork{ src: song.artwork_url }
