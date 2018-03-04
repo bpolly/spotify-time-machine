@@ -1,9 +1,39 @@
-.playlist-cover {
-  height: 100%;
-  width: 100%;
-  margin-bottom: -6px;
-}
+#playlist-show {
+  .hero-body {
+    padding: 0 !important;
+  }
 
-#playlist-show.hero-body {
-  padding: 0 !important;
+  table#songs-table {
+    background: #ffffff00;
+    color: #dcdcdc;
+    font-size: 0.9rem;
+
+    td, th {
+      border-bottom: 1px solid #333333;
+    }
+
+    .song-list-artwork {
+      height: auto;
+      width: 46px;
+      margin-bottom: -5px;
+    }
+
+    tbody tr:not(.is-selected):hover {
+      background-color: #232323;
+    }
+    /* unvisited link */
+    a:link, a:visited {
+        color: white;
+    }
+
+    a:hover {
+      color: #000000;
+      background: #3aff9b;
+    }
+  }
+
+  .box {
+    background: #272727;
+    color: #dcdcdc;
+  }
 }

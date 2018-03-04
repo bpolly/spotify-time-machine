@@ -1,19 +1,41 @@
-%section.hero.is-danger#playlist-show
-  .columns.is-gapless.is-vcentered
-    .column.is-one-fifth
-      %img.playlist-cover{ src: @playlist.playlist_versions.last.artwork_url }
+.container#playlist-show
+  .columns.is-desktop
+    .column.is-one-quarter-desktop
+      .columns
+        .column
+          .box.no-padding
+            %figure.image
+              %img{ src: @playlist.playlist_versions.last.artwork_url }
+      .columns
+        .column
+          .box
+            %h1= @playlist.name
     .column
-      .hero-body
-        %h1.title
-          = @playlist.name
-.columns.is-gapless
-  .column.is-one-fifth
-    Some text
-  .column
-    %table.table.is-fullwidth
-      - @playlist.playlist_versions.last.songs.each do |song|
-        %tr
-          %td
-            %img{ src: song.artwork_url }
-          %td= song.name
-          %td= song.artists.map(&:name).join(', ')
+      .box
+        %table#songs-table.table.is-fullwidth
+          - @playlist.playlist_versions.last.songs.each do |song|
+            %tr
+              %td
+                %img.song-list-artwork{ src: song.artwork_url }
+              %td= song.name
+              %td
+                = song.artists.map { |a| link_to a.name, artist_path(a) }.join(' &sdot; ').html_safe
+
+
+
+
+            -#
+            -# .media-content
+            -#   .content
+            -#     %h1= @playlist.name
+            -#   %nav.level.is-mobile
+            -#     .level-left
+            -#       %a.level-item
+            -#         %span.icon.is-small
+            -#           %i.fas.fa-reply
+            -#       %a.level-item
+            -#         %span.icon.is-small
+            -#           %i.fas.fa-retweet
+            -#       %a.level-item
+            -#         %span.icon.is-small
+            -#           %i.fas.fa-heart

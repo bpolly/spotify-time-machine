@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root 'playlists#index'
 
   resources :playlists
+  resources :artists
+  resources :songs
 end

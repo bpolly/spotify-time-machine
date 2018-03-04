@@ -1,5 +1,16 @@
 nav.breadcrumb {
   padding: 0px 18px;
   background: #f1f1f1;
-  margin-bottom: 0 !important;
+  background-color: #292929;
+  margin-bottom: 0.7rem;
+}
+
+nav.breadcrumb {
+  a {
+    color: #3aff9b;
+  }
+
+  a:hover {
+      color: #e4e4e4;
+  }
 }
