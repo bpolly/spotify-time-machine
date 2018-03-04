@@ -1,12 +1,12 @@
 .container#playlist-show
   .columns.is-desktop
     .column.is-one-quarter-desktop
-      .columns.is-multiline
-        .column.is-full-desktop.is-one-quarter-tablet.is-one-fifth-mobile
+      .columns.is-multiline.is-mobile
+        .column.is-full-desktop.is-one-fifth-tablet.is-one-fifth-mobile
           .box.no-padding
             %figure.image
               %img{ src: @playlist.playlist_versions.last.artwork_url }
-        .column.is-full-desktop.is-three-quarters-tablet.is-four-fifths-mobile
+        .column.is-full-desktop.is-four-fifths-tablet.is-four-fifths-mobile
           .box#playlist-info-box
             %h1= @playlist.name
     .column
@@ -19,6 +19,8 @@
               %td= song.name
               %td
                 = song.artists.map { |a| link_to a.name, artist_path(a) }.join(' &sdot; ').html_safe
+              %td
+                = link_to 'Play', "https://open.spotify.com/track/#{song.spotify_id}"
 
 
 
