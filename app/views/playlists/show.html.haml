@@ -1,14 +1,13 @@
 .container#playlist-show
   .columns.is-desktop
     .column.is-one-quarter-desktop
-      .columns
-        .column
+      .columns.is-multiline
+        .column.is-full-desktop.is-one-quarter-tablet.is-one-fifth-mobile
           .box.no-padding
             %figure.image
               %img{ src: @playlist.playlist_versions.last.artwork_url }
-      .columns
-        .column
-          .box
+        .column.is-full-desktop.is-three-quarters-tablet.is-four-fifths-mobile
+          .box#playlist-info-box
             %h1= @playlist.name
     .column
       .box
