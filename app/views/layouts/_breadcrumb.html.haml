@@ -1,0 +1,4 @@
+%nav.breadcrumb{"aria-label" => "breadcrumbs"}
+  %ul
+    - breadcrumb_trail do |crumb|
+      %li= link_to crumb.name, crumb.url, (crumb.current? ? {'aria-current' => 'page'} : {})

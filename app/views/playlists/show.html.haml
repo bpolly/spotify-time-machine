@@ -1,0 +1,16 @@
+%section.hero.is-danger
+  .hero-body
+    .container
+      %h1.title
+        = @playlist.name
+.columns.is-gapless
+  .column.is-one-fifth
+    Some text
+  .column
+    %table.table.is-fullwidth
+      - @playlist.playlist_versions.last.songs.each do |song|
+        %tr
+          %td
+            %img{ src: song.artwork_url }
+          %td= song.name
+          %td= song.artists.map(&:name).join(', ')
