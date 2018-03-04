@@ -1,8 +1,11 @@
-%section.hero.is-danger
-  .hero-body
-    .container
-      %h1.title
-        = @playlist.name
+%section.hero.is-danger#playlist-show
+  .columns.is-gapless.is-vcentered
+    .column.is-one-fifth
+      %img.playlist-cover{ src: @playlist.playlist_versions.last.artwork_url }
+    .column
+      .hero-body
+        %h1.title
+          = @playlist.name
 .columns.is-gapless
   .column.is-one-fifth
     Some text

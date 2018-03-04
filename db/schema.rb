@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180303193245) do
+ActiveRecord::Schema.define(version: 20180304032818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20180303193245) do
     t.bigint "playlist_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "artwork_url"
     t.index ["playlist_id"], name: "index_playlist_versions_on_playlist_id"
   end
 

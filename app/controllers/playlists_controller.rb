@@ -2,7 +2,7 @@ class PlaylistsController < ApplicationController
   breadcrumb 'Playlists', :playlists_path
 
   def index
-    @playlists = Playlist.all
+    @playlists = Playlist.include(playlist_versions: { songs: :artists }).all
   end
 
   def show

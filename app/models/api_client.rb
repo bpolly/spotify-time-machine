@@ -2,37 +2,46 @@ module APIClient
   include HTTParty
 
   def self.get_playlist(playlist)
-    token = get_token
+    token = get_token(true)
+
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}/tracks"
     response = HTTParty.get(url, headers: {"Authorization" => "Bearer #{token}"})
     if response.success?
-      playlist_version = playlist.playlist_versions.create
-      parsed_response = JSON.parse(response.body, object_class: OpenStruct)
-      parsed_response.items.each_with_index do |playlist_item, position|
-        track = playlist_item.track
-        album_id = track.album.id
-        album_art_link = track.album.images.last.url
+      PlaylistVersion.transaction do
+        playlist_version = playlist.playlist_versions.create
+        playlist_version.update(
+          artwork_url: upload_image_to_s3(get_playlist_artwork_url(playlist, token
+          ),
+                                          "playlist-version-#{playlist_version.id}")
+                                )
 
-        # create/find song record
-        song = Song.find_or_create_by(
-          name: track.name,
-          spotify_id: track.id,
-          explicit: track.explicit,
-          duration_ms: track.duration_ms,
-          spotify_uri: track.uri,
-          artwork_url: upload_image_to_s3(album_art_link, album_id)
-        )
+        parsed_response = JSON.parse(response.body, object_class: OpenStruct)
+        parsed_response.items.each_with_index do |playlist_item, position|
+          track = playlist_item.track
+          album_id = track.album.id
+          album_art_link = track.album.images.last.url
 
-        # create/find artists and associate them to song
-        track.artists.each do |artist|
-          song.artists.find_or_create_by(
-            name: artist.name,
-            spotify_id: artist.id,
-            spotify_uri: artist.uri
+          # create/find song record
+          song = Song.find_or_create_by(
+            name: track.name,
+            spotify_id: track.id,
+            explicit: track.explicit,
+            duration_ms: track.duration_ms,
+            spotify_uri: track.uri,
+            artwork_url: upload_image_to_s3(album_art_link, album_id)
           )
-        end
 
-        playlist_version.playlist_version_songs.create(song: song, position: position)
+          # create/find artists and associate them to song
+          track.artists.each do |artist|
+            song.artists.find_or_create_by(
+              name: artist.name,
+              spotify_id: artist.id,
+              spotify_uri: artist.uri
+            )
+          end
+
+          playlist_version.playlist_version_songs.create(song: song, position: position)
+        end
       end
     else
       # if message = "The access token expired" and status == 401
@@ -55,14 +64,20 @@ module APIClient
     new_token
   end
 
+  def self.get_playlist_artwork_url(playlist, token)
+    images_url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}/images"
+    response = HTTParty.get(images_url, headers: {"Authorization" => "Bearer #{token}"})
+    JSON.parse(response.body)[0]["url"]
+  end
 
-  def self.upload_image_to_s3(image_link, album_id)
-    file = "/tmp/#{album_id}.png"
+
+  def self.upload_image_to_s3(image_link, spotify_id)
+    file = "/tmp/#{spotify_id}.png"
     File.open(file, "wb") do |f|
       f.write HTTParty.get(image_link).body
     end
 
     S3_BUCKET.object(File.basename(file)).upload_file(file, acl: 'public-read')
-    "https://s3.amazonaws.com/sportcasts.com/#{album_id}.png"
+    "https://s3.amazonaws.com/sportcasts.com/#{spotify_id}.png"
   end
 end
