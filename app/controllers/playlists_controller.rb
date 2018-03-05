@@ -2,13 +2,15 @@ class PlaylistsController < ApplicationController
   breadcrumb 'Playlists', :playlists_path
 
   def index
-    @playlists = Playlist.include(playlist_versions: { songs: :artists }).all
+    @playlists = Playlist.all
   end
 
   def show
     @playlist = Playlist.find(params[:id])
-    @songs = PlaylistVersionSong.includes(song: :artists).where(playlist_version: @playlist.versions.last).order(position: :asc)
+    redirect_to playlist_version_path(@playlist, @playlist.versions.last)
+  end
 
-    breadcrumb @playlist.name, playlist_path(@playlist)
+  def new
+    @playlist = Playlist.new
   end
 end

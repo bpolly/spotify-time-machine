@@ -3,12 +3,22 @@
     .column.is-one-quarter-desktop
       .columns.is-multiline.is-mobile
         .column.is-full-desktop.is-one-fifth-tablet.is-one-fifth-mobile
-          .box.no-padding
+          .box.is-paddingless
             %figure.image
               %img{ src: @playlist.versions.last.artwork_url }
         .column.is-full-desktop.is-four-fifths-tablet.is-four-fifths-mobile
           .box#playlist-info-box
             %h1= @playlist.name
+            %h1
+              Song Count:
+              = @playlist.versions.last.songs.count
+        .column.is-full-desktop#playlist-version-column
+          %nav.panel
+            %p.panel-heading
+              Versions
+            - @playlist.versions.each do |version|
+              .panel-block
+                = link_to version.formatted_date, playlist_version_path(@playlist, version)
     .column
       .box
         %table#songs-table.table.is-fullwidth
@@ -21,22 +31,3 @@
                 = song.artists.map { |a| link_to a.name, artist_path(a) }.join(' &sdot; ').html_safe
               %td
                 = link_to 'Play', "https://open.spotify.com/track/#{song.spotify_id}"
-
-
-
-
-            -#
-            -# .media-content
-            -#   .content
-            -#     %h1= @playlist.name
-            -#   %nav.level.is-mobile
-            -#     .level-left
-            -#       %a.level-item
-            -#         %span.icon.is-small
-            -#           %i.fas.fa-reply
-            -#       %a.level-item
-            -#         %span.icon.is-small
-            -#           %i.fas.fa-retweet
-            -#       %a.level-item
-            -#         %span.icon.is-small
-            -#           %i.fas.fa-heart

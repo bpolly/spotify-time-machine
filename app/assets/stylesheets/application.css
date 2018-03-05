@@ -24,7 +24,3 @@ body {
 .table td, .table th {
   vertical-align: middle !important;
 }
-
-.no-padding {
-  padding: 0 !important;
-}

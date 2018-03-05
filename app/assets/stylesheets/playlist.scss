@@ -1,3 +1,5 @@
+$neon-green: #3aff9b;
+
 #playlist-show {
   .hero-body {
     padding: 0 !important;
@@ -21,15 +23,15 @@
     tbody tr:not(.is-selected):hover {
       background-color: #232323;
     }
-    /* unvisited link */
-    a:link, a:visited {
-        color: white;
-    }
+  }
 
-    a:hover {
-      color: #000000;
-      background: #3aff9b;
-    }
+  a:link, a:visited {
+      color: white;
+  }
+
+  a:hover {
+    color: #000000;
+    background: #3aff9b;
   }
 
   .box {
@@ -39,5 +41,23 @@
 
   #playlist-info-box {
     height: 100%;
+  }
+
+  .panel-heading {
+    font-size: 1.05em;
+    text-align: center;
+    background-color: $neon-green;
+    line-height: 1.15;
+  }
+
+  #playlist-version-column {
+    .panel-heading, .panel-tabs, .panel-block {
+      border-bottom: 1px solid $neon-green;
+      border-left: 1px solid $neon-green;
+      border-right: 1px solid $neon-green;
+    }
+    .panel-heading:first-child, .panel-tabs:first-child, .panel-block:first-child {
+      border-top: 1px solid #3aff9b;
+    }
   }
 }

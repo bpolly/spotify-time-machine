@@ -1,4 +1,11 @@
 %nav#main-nav.navbar{"aria-label" => "main navigation", :role => "navigation"}
   .navbar-brand
-    %a.navbar-item{:href => "/"}
+    %a.navbar-item#time-machine{:href => "/"}
       Spotify Time Machine
+  .navbar-end
+    .navbar-item
+      .field
+        .control.has-icons-left.has-icons-right
+          %input.input.is-success{:placeholder => "Playlist", :type => "text"}/
+          %span.icon.is-small.is-left
+            %i.fas.fa-list

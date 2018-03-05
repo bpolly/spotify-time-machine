@@ -1,0 +1,11 @@
+.box
+  = simple_form_for @playlist do |f|
+    .field
+      .control
+        = f.input :name,wrapper_html: { class: 'your-class' }
+    .field
+      .control
+        = f.input :spotify_id, wrapper_html: { class: 'your-class' }
+    .field
+      .control
+        = f.button :submit
