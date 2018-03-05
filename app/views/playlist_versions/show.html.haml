@@ -30,4 +30,5 @@
               %td
                 = song.artists.map { |a| link_to a.name, artist_path(a) }.join(' &sdot; ').html_safe
               %td
-                = link_to 'Play', "https://open.spotify.com/track/#{song.spotify_id}"
+                = link_to "https://open.spotify.com/track/#{song.spotify_id}", class: 'spotify-play-icon', target: "_blank" do
+                  %i.fas.fa-play-circle

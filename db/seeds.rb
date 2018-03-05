@@ -17,3 +17,9 @@ Playlist.find_or_create_by(
   name: "Today's Top Hits",
   spotify_id: '37i9dQZF1DXcBWIGoYBM5M'
 )
+
+Playlist.find_or_create_by(
+  user_id: 'spotifycharts',
+  name: "United States Top 50",
+  spotify_id: '37i9dQZEVXbLRQDuF5jeBp'
+)

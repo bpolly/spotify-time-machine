@@ -60,4 +60,12 @@ $neon-green: #3aff9b;
       border-top: 1px solid #3aff9b;
     }
   }
+
+  a.spotify-play-icon:hover {
+    background: none;
+    color: inherit;
+  }
+  .fa-play-circle {
+    color: #ffffff4f;
+  }
 }

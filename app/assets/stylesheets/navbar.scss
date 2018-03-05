@@ -5,4 +5,12 @@ nav#main-nav.navbar {
     font-family: 'Bungee', cursive;
     // margin-left: 3px;
   }
+
+  a.navbar-item:hover,
+  a.navbar-item.is-active,
+  a.navbar-link:hover,
+  a.navbar-link.is-active {
+    background: none;
+    color: black;
+  }
 }
