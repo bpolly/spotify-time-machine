@@ -19,7 +19,7 @@ class PlaylistsController < ApplicationController
       full_uri = params[:spotify_full_uri].split(':')
       p = playlist.new(
             user_id: full_uri[2],
-            spotify_uri = full_uri[4]
+            spotify_uri: full_uri[4]
           )
       p.update(name: APIClient.get_playlist_name(p))
     end
