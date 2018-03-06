@@ -1,4 +1,4 @@
-$neon-green: #3aff9b;
+@import "utilities/variables";
 
 #playlist-show {
   .hero-body {
@@ -31,7 +31,7 @@ $neon-green: #3aff9b;
 
   a:hover {
     color: #000000;
-    background: #3aff9b;
+    background: $neon-green;
   }
 
   .box {
@@ -57,7 +57,7 @@ $neon-green: #3aff9b;
       border-right: 1px solid $neon-green;
     }
     .panel-heading:first-child, .panel-tabs:first-child, .panel-block:first-child {
-      border-top: 1px solid #3aff9b;
+      border-top: 1px solid $neon-green;
     }
   }
 

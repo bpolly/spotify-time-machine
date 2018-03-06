@@ -1,5 +1,7 @@
+@import "utilities/variables";
+
 nav#main-nav.navbar {
-  background: #3aff9b;
+  background: $neon-green;
 
   #time-machine {
     font-family: 'Bungee', cursive;

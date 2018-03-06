@@ -1,3 +1,5 @@
+@import "utilities/variables";
+
 nav.breadcrumb {
   padding: 0px 18px;
   background: #f1f1f1;
@@ -8,7 +10,7 @@ nav.breadcrumb {
 
 nav.breadcrumb {
   a {
-    color: #3aff9b;
+    color: $neon-green;
   }
 
   a:hover {

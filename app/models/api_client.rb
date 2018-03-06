@@ -2,18 +2,24 @@ module APIClient
   include HTTParty
   MAX_RETRY_COUNT = 3
 
-  def self.get_playlist(playlist)
-    url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
+  def self.make_request(url, *objects)
     token = get_token
 
     (0...MAX_RETRY_COUNT).each do |retry_count|
       response = HTTParty.get(url, headers: {"Authorization" => "Bearer #{token}"})
 
       if response.success?
-        return save_playlist_info(playlist, response)
+        yield(response, *objects)
       elsif response.unauthorized?
         token = get_token(force: true)
       end
+    end
+  end
+
+  def self.create_new_playlist_version(playlist)
+    url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
+    make_request(url, playlist) do |response, playlist|
+      save_playlist_info(response, playlist)
     end
   end
 
@@ -34,23 +40,31 @@ module APIClient
     new_token
   end
 
-  def self.save_playlist_info(playlist, response)
+  def self.save_playlist_info(response, playlist)
     PlaylistVersion.transaction do
-      parsed_response = JSON.parse(response.body, object_class: OpenStruct)
-      playlist_artwork_url = parsed_response.images.first.url
-      playlist_items = parsed_response.tracks.items
 
+      # Parse items and see if there has been an update
+      parsed_response = JSON.parse(response.body, object_class: OpenStruct)
+      playlist_items = parsed_response.tracks.items
+      return if no_new_updates?(playlist, playlist_items)
+
+      # Create new version since there are updates
       playlist_version = playlist.versions.create
+
+      # Save playlist artwork
+      playlist_artwork_url = parsed_response.images.first.url
       playlist_version.update(
-        artwork_url: upload_image_to_s3(playlist_artwork_url, "playlist-version-#{playlist_version.id}")
+        artwork_url: upload_image_to_s3(playlist_artwork_url, "playlist-version-#{playlist_version.id}"),
+        description: parsed_response.description,
+        followers: parsed_response.followers.to_i
       )
 
+      # For each track, make new song record if necessary
       playlist_items.each_with_index do |playlist_item, position|
         track = playlist_item.track
         album_id = track.album.id
         album_art_link = track.album.images.last.url
 
-        # create/find song record
         song = Song.find_or_create_by(
           name: track.name,
           spotify_id: track.id,
@@ -69,6 +83,7 @@ module APIClient
           )
         end
 
+        # add created song to version with position
         playlist_version.playlist_version_songs.create(song: song, position: position)
       end
     end
@@ -83,9 +98,26 @@ module APIClient
       f.write HTTParty.get(image_link).body
     end
 
-
     S3_BUCKET.object(File.basename(file)).upload_file(file, acl: 'public-read')
     File.delete(file) if File.exist?(file)
     s3_image_url
+  end
+
+  def self.get_playlist_name(playlist)
+    url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
+    make_request(url, playlist) do |response, playlist|
+      return JSON.parse(response.body, object_class: OpenStruct).name
+    end
+  end
+
+  private
+
+  def self.no_new_updates?(playlist, found_playlist_items)
+    return false if playlist.versions.empty?
+    return false if found_playlist_items.any? { |item| item.added_at.nil? }
+    last_created_at = playlist.versions.last.created_at.utc
+    found_playlist_items.all? do |item|
+      Time.parse(item.added_at) <= last_created_at
+    end
   end
 end
