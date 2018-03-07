@@ -2,7 +2,7 @@ module APIClient
   include HTTParty
   MAX_RETRY_COUNT = 3
 
-  def self.make_request(url, *objects)
+  def self.make_authorized_request(url, *objects)
     token = get_token
 
     (0...MAX_RETRY_COUNT).each do |retry_count|
@@ -18,7 +18,7 @@ module APIClient
 
   def self.create_new_playlist_version(playlist)
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
-    make_request(url, playlist) do |response, playlist|
+    make_authorized_request(url, playlist) do |response, playlist|
       save_playlist_info(response, playlist)
     end
   end
@@ -105,9 +105,15 @@ module APIClient
 
   def self.get_playlist_name(playlist)
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
-    make_request(url, playlist) do |response, playlist|
+    make_authorized_request(url, playlist) do |response, playlist|
       return JSON.parse(response.body, object_class: OpenStruct).name
     end
+  end
+
+  def self.get_user_authorization
+    url = "https://accounts.spotify.com/authorize"
+    client_id = ENV["SPOTIFY_CLIENT_ID"]
+    HTTParty.get(url, body: { client_id: client_id })
   end
 
   private
