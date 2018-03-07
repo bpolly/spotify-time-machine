@@ -3,6 +3,19 @@
     %a.navbar-item#time-machine{:href => "/"}
       Spotify Time Machine
   .navbar-end
+    - if !signed_in?
+      %a.navbar-item{:href => "https://bulma.io/"}
+    - else
+      .navbar-item.has-dropdown.is-hoverable
+        %a.navbar-link{:href => "/documentation/overview/start/"}
+          Docs
+        .navbar-dropdown.is-boxed
+          %a.navbar-item{:href => "/documentation/overview/start/"}
+            Overview
+          %a.navbar-item{:href => "https://bulma.io/documentation/modifiers/syntax/"}
+            Modifiers
+
+
     .navbar-item
       .field
         .control.has-icons-left.has-icons-right

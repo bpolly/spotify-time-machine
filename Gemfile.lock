@@ -49,6 +49,7 @@ GEM
     aws-sdk-resources (2.11.8)
       aws-sdk-core (= 2.11.8)
     aws-sigv4 (1.0.2)
+    bcrypt (3.1.11)
     bindex (0.5.0)
     builder (3.2.3)
     byebug (10.0.0)
@@ -61,6 +62,10 @@ GEM
       xpath (>= 2.0, < 4.0)
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
+    clearance (1.16.1)
+      bcrypt
+      email_validator (~> 1.4)
+      rails (>= 3.1)
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -75,6 +80,8 @@ GEM
     dotenv-rails (2.2.1)
       dotenv (= 2.2.1)
       railties (>= 3.2, < 5.2)
+    email_validator (1.6.0)
+      activemodel
     erubi (1.7.0)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -237,6 +244,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk (~> 2)
   capybara (~> 2.13)
+  clearance
   coffee-rails (~> 4.2)
   dotenv-rails
   haml-rails (~> 1.0)
