@@ -110,10 +110,29 @@ module APIClient
     end
   end
 
-  def self.get_user_authorization
-    url = "https://accounts.spotify.com/authorize"
+  def self.get_user_authorization_url
+    url = 'https://accounts.spotify.com/authorize'
     client_id = ENV["SPOTIFY_CLIENT_ID"]
-    HTTParty.get(url, body: { client_id: client_id })
+    params = {
+      client_id: client_id,
+      response_type: 'code',
+      redirect_uri: ENV['REDIRECT_URI'],
+      scope: 'playlist-modify-public'
+    }
+    "#{url}?#{params.to_query}"
+  end
+
+  def self.request_user_tokens(authorization_token)
+    url = 'https://accounts.spotify.com/api/token'
+    params = {
+      grant_type: 'authorization_code',
+      code: authorization_token,
+      redirect_uri: ENV['REDIRECT_URI']
+    }
+    client_id = ENV["SPOTIFY_CLIENT_ID"]
+    client_secret = ENV["SPOTIFY_CLIENT_SECRET"]
+    auth = { username: client_id, password: client_secret }
+    HTTParty.post(url, basic_auth: auth, body: params)
   end
 
   private

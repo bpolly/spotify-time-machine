@@ -17,4 +17,8 @@ class PlaylistVersionsController < ApplicationController
   def new
     @playlist = Playlist.new
   end
+
+  def save_to_profile
+    APIClient.create_playlist_for_user(spotify_user_id)
+  end
 end

@@ -17,6 +17,12 @@
             %h1
               Followers:
               = @playlist.versions.last.followers
+        .column.is-full-desktop
+          .box
+            = link_to 'test redirect', save_to_profile_playlist_version_path(@playlist, @playlist.versions.last)
+        .column.is-full-desktop
+          .box
+            = link_to 'make new playlist', ""
         .column.is-full-desktop#playlist-version-column
           %nav.panel
             %p.panel-heading
