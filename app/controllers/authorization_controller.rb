@@ -4,7 +4,7 @@ class AuthorizationController < ApplicationController
     unless request.referrer.include?('connect_to_spotify')
       cookies[:last_page_visit] = { value: request.referrer, expires: 20.minutes.from_now }
     end
-    redirect_to APIClient.get_user_authorization_url
+    redirect_to UserAPIClient.get_user_authorization_url
   end
 
   def disconnect_from_spotify
@@ -25,7 +25,7 @@ class AuthorizationController < ApplicationController
   private
 
   def save_tokens(authorization_token:)
-    token_response = APIClient.request_user_tokens(authorization_token)
+    token_response = UserAPIClient.request_user_tokens(authorization_token)
     if(token_response.success?)
       parsed_response = JSON.parse(token_response.body, object_class: OpenStruct)
       save_tokens_in_cookie(
@@ -39,7 +39,7 @@ class AuthorizationController < ApplicationController
   end
 
   def save_user_id
-    user_id = APIClient.get_spotify_user_id(cookies[:sp_access_token])
+    user_id = UserAPIClient.get_spotify_user_id(cookies[:sp_access_token])
     cookies.permanent[:sp_user_id] = user_id if user_id
   end
 

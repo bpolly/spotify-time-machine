@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_new_access_token
-    new_token = APIClient.refresh_access_token(cookies[:sp_refresh_token])
+    new_token = UserAPIClient.refresh_access_token(cookies[:sp_refresh_token])
     update_access_token_cookie(access_token: new_token)
     new_token
   end
