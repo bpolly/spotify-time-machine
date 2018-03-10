@@ -19,6 +19,11 @@ class PlaylistVersionsController < ApplicationController
   end
 
   def save_to_profile
-    APIClient.create_playlist_for_user(spotify_user_id)
+    @playlist_version = PlaylistVersion.find(params[:id])
+    spotify_user_id = cookies[:sp_user_id] || APIClient.get_spotify_user_id(access_token)
+    APIClient.create_playlist_for_user(
+      user_id: spotify_user_id,
+      access_token: user_access_token,
+      playlist_name: @playlist_version.save_name)
   end
 end

@@ -6,4 +6,8 @@ class PlaylistVersion < ApplicationRecord
   def formatted_date
     created_at.strftime("%B %d, %Y")
   end
+
+  def save_name
+    "#{playlist.name} - #{created_at.strftime('%m-%d-%Y')}"
+  end
 end

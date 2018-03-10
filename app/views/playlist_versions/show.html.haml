@@ -19,10 +19,10 @@
               = @playlist.versions.last.followers
         .column.is-full-desktop
           .box
-            = link_to 'test redirect', save_to_profile_playlist_version_path(@playlist, @playlist.versions.last)
+            = link_to 'Connect to Spotify', '/connect_to_spotify'
         .column.is-full-desktop
           .box
-            = link_to 'make new playlist', ""
+            = link_to 'Make new playlist', save_to_profile_playlist_version_path(@playlist, @playlist.versions.last), method: :post
         .column.is-full-desktop#playlist-version-column
           %nav.panel
             %p.panel-heading
