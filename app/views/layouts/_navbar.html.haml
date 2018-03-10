@@ -21,8 +21,7 @@
                 %i.fas.fa-angle-down{"aria-hidden" => "true"}
           #dropdown-menu.dropdown-menu{:role => "menu"}
             .dropdown-content
-              %a.dropdown-item{:href => '/disconnect_from_spotify'}
-                Disconnect
+              = link_to 'Disconnect', '/disconnect_from_spotify', class: 'dropdown-item'
       - else
         = link_to '/connect_to_spotify', class: 'button is-dark is-outlined' do
           %i.fab.fa-spotify{style: 'margin-right: 7px'}
