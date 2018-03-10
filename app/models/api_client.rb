@@ -159,9 +159,12 @@ module APIClient
     url = 'https://accounts.spotify.com/api/token'
     params = {
       grant_type: 'refresh_token',
-      refresh_token: authorization_token
+      refresh_token: refresh_token
     }
-    response = HTTParty.post(url, params)
+    client_id = ENV["SPOTIFY_CLIENT_ID"]
+    client_secret = ENV["SPOTIFY_CLIENT_SECRET"]
+    auth = { username: client_id, password: client_secret }
+    response = HTTParty.post(url, body: params, basic_auth: auth)
     JSON.parse(response.body, object_class: OpenStruct).access_token
   end
 

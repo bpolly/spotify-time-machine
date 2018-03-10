@@ -5,29 +5,29 @@
         .column.is-full-desktop.is-one-fifth-tablet.is-one-fifth-mobile
           .box.is-paddingless
             %figure.image
-              %img{ src: @playlist.versions.last.artwork_url }
+              %img{ src: @playlist_version.artwork_url }
         .column.is-full-desktop.is-four-fifths-tablet.is-four-fifths-mobile
           .box#playlist-info-box
             %h1= @playlist.name
             %h1
-              = @playlist.versions.last.description
+              = @playlist_version.description
             %h1
               Song Count:
-              = @playlist.versions.last.songs.count
+              = @playlist_version.songs.count
             %h1
               Followers:
-              = @playlist.versions.last.followers
+              = @playlist_version.followers
         .column.is-full-desktop
           .box
-            = link_to 'Connect to Spotify', '/connect_to_spotify'
-        .column.is-full-desktop
-          .box
-            = link_to 'Make new playlist', save_to_profile_playlist_version_path(@playlist, @playlist.versions.last), method: :post
+            = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post do
+              %span.icon.is-small
+                %i.fab.fa-spotify
+              %span Save as Playlist
         .column.is-full-desktop#playlist-version-column
           %nav.panel
             %p.panel-heading
               Versions
-            - @playlist.versions.each do |version|
+            - @playlist.versions.order(created_at: :desc).each do |version|
               .panel-block
                 = link_to version.formatted_date, playlist_version_path(@playlist, version)
     .column

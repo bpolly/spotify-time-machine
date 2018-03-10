@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   resources :songs
 
   get '/connect_to_spotify', to: 'authorization#connect_to_spotify'
+  get '/disconnect_from_spotify', to: 'authorization#disconnect_from_spotify'
   get '/authorization_landing', to: 'authorization#landing'
 end

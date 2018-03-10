@@ -1,8 +1,17 @@
 class AuthorizationController < ApplicationController
 
   def connect_to_spotify
-    cookies[:last_page_visit] = request.referrer
+    unless request.referrer.include?('connect_to_spotify')
+      cookies[:last_page_visit] = { value: request.referrer, expires: 20.minutes.from_now }
+    end
     redirect_to APIClient.get_user_authorization_url
+  end
+
+  def disconnect_from_spotify
+    [:sp_user_id, :sp_access_token, :sp_refresh_token, :last_page_visit].each do |cookie|
+      cookies.delete(cookie)
+    end
+    redirect_to 'https://www.spotify.com/account/apps/'
   end
 
   def landing
@@ -30,12 +39,12 @@ class AuthorizationController < ApplicationController
   end
 
   def save_user_id
-    user_id = APIClient.get_spotify_user_id(cookies[:spotify_access_token])
+    user_id = APIClient.get_spotify_user_id(cookies[:sp_access_token])
     cookies.permanent[:sp_user_id] = user_id if user_id
   end
 
   def save_tokens_in_cookie(access_token, refresh_token, expires_in)
-    cookies[:spotify_access_token] = { value: access_token, expires: expires_in.seconds.from_now }
-    cookies.permanent[:spotify_refresh_token] = refresh_token
+    cookies[:sp_access_token] = { value: access_token, expires: expires_in.seconds.from_now }
+    cookies.permanent[:sp_refresh_token] = refresh_token
   end
 end

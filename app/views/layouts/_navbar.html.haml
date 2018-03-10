@@ -9,3 +9,21 @@
           %input.input.is-success{:placeholder => "Playlist", :type => "text"}/
           %span.icon.is-small.is-left
             %i.fas.fa-list
+    .navbar-item
+      - if connected_to_spotify?
+        .dropdown.is-right#spotify-connection-dropdown
+          .dropdown-trigger
+            %button.button.is-success{"aria-controls" => "dropdown-menu", "aria-haspopup" => "true"}
+              %span.icon.is-small
+                %i.fab.fa-spotify
+              %span= cookies[:sp_user_id]
+              %span.icon.is-small
+                %i.fas.fa-angle-down{"aria-hidden" => "true"}
+          #dropdown-menu.dropdown-menu{:role => "menu"}
+            .dropdown-content
+              %a.dropdown-item{:href => '/disconnect_from_spotify'}
+                Disconnect
+      - else
+        = link_to '/connect_to_spotify', class: 'button is-dark is-outlined' do
+          %i.fab.fa-spotify{style: 'margin-right: 7px'}
+          Connect
