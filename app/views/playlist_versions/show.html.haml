@@ -19,10 +19,13 @@
               = @playlist_version.followers
         .column.is-full-desktop
           .box
-            = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post do
-              %span.icon.is-small
-                %i.fab.fa-spotify
-              %span Save as Playlist
+            - if connected_to_spotify?
+              = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post do
+                %span.icon.is-small
+                  %i.fab.fa-spotify
+                %span Save Playlist
+            - else
+              Connect to Spotify to save a copy of this playlist!
         .column.is-full-desktop#playlist-version-column
           %nav.panel
             %p.panel-heading
