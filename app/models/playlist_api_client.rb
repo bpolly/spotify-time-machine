@@ -91,7 +91,7 @@ module PlaylistAPIClient
   end
 
   def self.upload_image_to_s3(image_link, spotify_id)
-    s3_image_url = "https://s3.amazonaws.com/sportcasts.com/#{spotify_id}.png"
+    s3_image_url = "https://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{spotify_id}.png"
     file = Rails.root.join('tmp', "#{spotify_id}.png").to_s
     return s3_image_url if S3_BUCKET.object(File.basename(file)).exists?
 
