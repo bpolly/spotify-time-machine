@@ -12,16 +12,29 @@ class PlaylistsController < ApplicationController
 
   def new
     @playlist = Playlist.new
+
+    breadcrumb 'New', new_playlist_path
   end
 
   def create
-    if params[:spotify_full_uri]
-      full_uri = params[:spotify_full_uri].split(':')
-      p = playlist.new(
-            user_id: full_uri[2],
-            spotify_uri: full_uri[4]
+    binding.pry;
+    if params[:playlist][:spotify_full_uri]
+      full_uri = params[:playlist][:spotify_full_uri].split(':')
+      user_id = full_uri[2]
+      spotify_id = full_uri[4]
+      p = Playlist.new(
+            name: PlaylistAPIClient.get_playlist_name(user_id: user_id, spotify_id: spotify_id),
+            user_id: user_id,
+            spotify_id: spotify_id
           )
-      p.update(name: PlaylistAPIClient.get_playlist_name(p))
+    else
+      p = Playlist.new(name: params[:playlist][:name], spotify_id: params[:playlist][:spotify_id])
+    end
+
+    if p.save
+      redirect_to playlist_path(p)
+    else
+      render 'new'
     end
   end
 end

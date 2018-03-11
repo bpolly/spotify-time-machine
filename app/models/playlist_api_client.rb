@@ -9,7 +9,7 @@ module PlaylistAPIClient
       response = HTTParty.get(url, headers: {"Authorization" => "Bearer #{token}"})
 
       if response.success?
-        yield(response, *objects)
+        return yield(response, *objects)
       elsif response.unauthorized?
         token = get_token(force: true)
       end
@@ -41,6 +41,7 @@ module PlaylistAPIClient
   end
 
   def self.save_playlist_info(response, playlist)
+    return if playlist.version_saved_today?
     PlaylistVersion.transaction do
 
       # Parse items and see if there has been an update
@@ -103,7 +104,7 @@ module PlaylistAPIClient
     s3_image_url
   end
 
-  def self.get_playlist_name(playlist)
+  def self.get_playlist_name(user_id:, spotify_id:)
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
     make_authorized_request(url, playlist) do |response, playlist|
       return JSON.parse(response.body, object_class: OpenStruct).name

@@ -5,5 +5,4 @@ namespace :playlist do
       PlaylistAPIClient.create_new_playlist_version(playlist)
     end
   end
-
 end
