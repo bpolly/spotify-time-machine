@@ -17,7 +17,6 @@ class PlaylistsController < ApplicationController
   end
 
   def create
-    binding.pry;
     if params[:playlist][:spotify_full_uri]
       full_uri = params[:playlist][:spotify_full_uri].split(':')
       user_id = full_uri[2]
