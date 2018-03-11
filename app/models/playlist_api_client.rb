@@ -105,8 +105,8 @@ module PlaylistAPIClient
   end
 
   def self.get_playlist_name(user_id:, spotify_id:)
-    url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
-    make_authorized_request(url, playlist) do |response, playlist|
+    url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_id}"
+    make_authorized_request(url) do |response, playlist|
       return JSON.parse(response.body, object_class: OpenStruct).name
     end
   end
