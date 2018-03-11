@@ -1,0 +1,9 @@
+@import "utilities/variables";
+
+#save-playlist-btn {
+  width: 100%;
+
+  &:focus {
+    background-color: inherit !important;
+  }
+}

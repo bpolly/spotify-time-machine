@@ -1,0 +1,18 @@
+var old_html = '<span class="icon is-small"><i class="fab fa-spotify"></i></span><span>Save Playlist</span>'
+var success_html = '<span class="icon is-small"><i class="fas fa-check"></i></span><span>Playlist Saved!</span>'
+
+$('#save-playlist-btn').removeClass('is-loading');
+$('#save-playlist-btn').removeClass('is-white');
+$('#save-playlist-btn').removeClass('is-outlined');
+$('#save-playlist-btn').addClass('is-success');
+$('#save-playlist-btn').html(success_html);
+
+
+setTimeout(function(){
+  $('#save-playlist-btn').prop('disabled', false);
+  $('#save-playlist-btn').removeClass('is-success');
+  $('#save-playlist-btn').addClass('is-white');
+  $('#save-playlist-btn').addClass('is-outlined');
+  $('#save-playlist-btn').removeClass('is-success');
+  $('#save-playlist-btn').html(old_html);
+}, 3000);

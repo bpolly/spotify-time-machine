@@ -26,12 +26,16 @@
   }
 
   a:link, a:visited {
+    &:not(#save-playlist-btn) {
       color: white;
+    }
   }
 
   a:hover {
-    color: #000000;
-    background: $neon-green;
+    &:not(#save-playlist-btn) {
+      color: #000000;
+      background: $neon-green;
+    }
   }
 
   .box {
