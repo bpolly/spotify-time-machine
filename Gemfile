@@ -29,6 +29,8 @@ gem 'aws-sdk', '~> 2'
 gem 'simple_form'
 gem 'jquery-rails'
 gem 'dotenv-rails', :require => 'dotenv/rails-now'
+gem 'rollbar'
+gem 'oj', '~> 2.16.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
