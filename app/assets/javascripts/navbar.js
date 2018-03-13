@@ -10,4 +10,12 @@ $( document ).on('turbolinks:load', function() {
   $('#spotify-connection-dropdown').click(function(e){
 	   e.stopPropagation();
   });
+
+  $('#playlist-select2').select2({
+    placeholder: 'Select an option'
+  });
+
+  $('#playlist-select2').on("select2:select", function(e) {
+    window.location.href = "/playlists/" + e.params.data.id;
+  });
 })

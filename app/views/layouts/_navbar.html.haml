@@ -5,10 +5,12 @@
   .navbar-end
     .navbar-item
       .field
-        .control.has-icons-left.has-icons-right
-          %input.input.is-success{:placeholder => "Playlist", :type => "text"}/
-          %span.icon.is-small.is-left
-            %i.fas.fa-list
+        .control
+          %form{:action => "playlists/show", :method => "GET"}
+            %select#playlist-select2.select.input{:name => "state"}
+              %option
+              - Playlist.all.each do |playlist|
+                %option{:value => playlist.id}= playlist.name
     .navbar-item
       - if connected_to_spotify?
         .dropdown.is-right#spotify-connection-dropdown
