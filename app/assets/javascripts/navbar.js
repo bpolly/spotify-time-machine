@@ -12,7 +12,7 @@ $( document ).on('turbolinks:load', function() {
   });
 
   $('#playlist-select2').select2({
-    placeholder: 'Select an option'
+    placeholder: 'Select a playlist'
   });
 
   $('#playlist-select2').on("select2:select", function(e) {

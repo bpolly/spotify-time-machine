@@ -19,7 +19,7 @@
               = @playlist_version.followers
         .column.is-full-desktop
           - if connected_to_spotify?
-            = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post, remote: true, class: 'button is-outlined is-white', id: 'save-playlist-btn' do
+            = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post, remote: true, class: 'button is-outlined is-white no-highlight', id: 'save-playlist-btn' do
               %span.icon.is-small
                 %i.fab.fa-spotify
               %span Save Playlist
@@ -38,11 +38,11 @@
         %table#songs-table.table.is-fullwidth
           - @songs.each do |song|
             %tr
-              %td
-                %img.song-list-artwork{ src: song.artwork_url }
+              %td.song-artwork-td
+                = link_to "https://open.spotify.com/track/#{song.spotify_id}", class: 'no-highlight', target: "_blank" do
+                  %img.song-list-artwork{ src: song.artwork_url }
+                  .play-overlay
+                    %i.fas.fa-play
               %td= song.name
               %td
                 = song.artists.map { |a| link_to a.name, artist_path(a) }.join(' &sdot; ').html_safe
-              %td
-                = link_to "https://open.spotify.com/track/#{song.spotify_id}", class: 'spotify-play-icon', target: "_blank" do
-                  %i.fas.fa-play-circle
