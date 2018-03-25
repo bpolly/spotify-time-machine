@@ -37,6 +37,7 @@ module PlaylistAPIClient
                         )
     new_token = response.parsed_response.fetch('access_token')
     cache.set('spotify_token', new_token)
+    cache.quit
     new_token
   end
 
