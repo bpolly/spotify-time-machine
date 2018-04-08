@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PlaylistVersion do
+RSpec.describe Playlist do
   subject { create(:playlist_version) }
 
   describe '#formatted_date' do

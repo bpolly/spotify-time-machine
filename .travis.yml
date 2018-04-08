@@ -9,3 +9,5 @@ script:
   - bundle exec rspec
 services:
   - postgresql
+notifications:
+  email: false
