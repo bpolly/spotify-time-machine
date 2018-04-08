@@ -1,11 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :playlist_version do
     status 'Waiting'
     active false
     idle false
-    playlist_id
-    created_at
-    updated_at
+    association :playlist
     artwork_url
     description
     followers
