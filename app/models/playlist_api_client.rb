@@ -8,17 +8,14 @@ module PlaylistAPIClient
     (0...MAX_RETRY_COUNT).each do |_retry_count|
       response = HTTParty.get(url, headers: { 'Authorization' => "Bearer #{token}" })
 
-      if response.success?
-        return yield(response, *objects)
-      elsif response.unauthorized?
-        token = get_token(force: true)
-      end
+      return yield(response, *objects) if response.success?
+      token = get_token(force: true)
     end
   end
 
   def self.create_new_playlist_version(playlist)
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
-    make_authorized_request(url, playlist) do |response, playlist|
+    make_authorized_request(url, playlist) do |response|
       save_playlist_info(response, playlist)
     end
   end
@@ -54,7 +51,10 @@ module PlaylistAPIClient
       # Save playlist artwork
       playlist_artwork_url = parsed_response.images.first.url
       playlist_version.update(
-        artwork_url: upload_image_to_s3(playlist_artwork_url, "playlist-version-#{playlist_version.id}"),
+        artwork_url: upload_image_to_s3(
+          playlist_artwork_url,
+          "playlist-version-#{playlist_version.id}"
+        ),
         description: parsed_response.description,
         followers: parsed_response.followers.to_i
       )
@@ -110,14 +110,13 @@ module PlaylistAPIClient
     end
   end
 
-  private
-
   def self.no_new_updates?(playlist, found_playlist_items)
     return false if playlist.versions.empty?
     return false if found_playlist_items.any? { |item| item.added_at.nil? }
     last_created_at = playlist.versions.last.created_at.utc
     found_playlist_items.all? do |item|
-      Time.parse(item.added_at) <= last_created_at
+      Time.zone.parse(item.added_at) <= last_created_at
     end
   end
+  private_class_method :no_new_updates?
 end
