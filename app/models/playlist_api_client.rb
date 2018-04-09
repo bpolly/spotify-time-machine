@@ -5,8 +5,8 @@ module PlaylistAPIClient
   def self.make_authorized_request(url, *objects)
     token = get_token
 
-    (0...MAX_RETRY_COUNT).each do |retry_count|
-      response = HTTParty.get(url, headers: {"Authorization" => "Bearer #{token}"})
+    (0...MAX_RETRY_COUNT).each do |_retry_count|
+      response = HTTParty.get(url, headers: { 'Authorization' => "Bearer #{token}" })
 
       if response.success?
         return yield(response, *objects)
@@ -28,13 +28,12 @@ module PlaylistAPIClient
     existing_token = cache.get('spotify_token')
     return existing_token if existing_token && !force
 
-    client_id = ENV["SPOTIFY_CLIENT_ID"]
-    client_secret = ENV["SPOTIFY_CLIENT_SECRET"]
+    client_id = ENV['SPOTIFY_CLIENT_ID']
+    client_secret = ENV['SPOTIFY_CLIENT_SECRET']
     auth = { username: client_id, password: client_secret }
     response = HTTParty.post('https://accounts.spotify.com/api/token',
-                          basic_auth: auth,
-                          body: { grant_type: 'client_credentials' }
-                        )
+                             basic_auth: auth,
+                             body: { grant_type: 'client_credentials' })
     new_token = response.parsed_response.fetch('access_token')
     cache.set('spotify_token', new_token)
     cache.quit
@@ -44,7 +43,6 @@ module PlaylistAPIClient
   def self.save_playlist_info(response, playlist)
     return if playlist.version_saved_today?
     PlaylistVersion.transaction do
-
       # Parse items and see if there has been an update
       parsed_response = JSON.parse(response.body, object_class: OpenStruct)
       playlist_items = parsed_response.tracks.items
@@ -96,7 +94,7 @@ module PlaylistAPIClient
     file = Rails.root.join('tmp', "#{spotify_id}.png").to_s
     return s3_image_url if S3_BUCKET.object(File.basename(file)).exists?
 
-    File.open(file, "wb") do |f|
+    File.open(file, 'wb') do |f|
       f.write HTTParty.get(image_link).body
     end
 
@@ -107,7 +105,7 @@ module PlaylistAPIClient
 
   def self.get_playlist_name(user_id:, spotify_id:)
     url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_id}"
-    make_authorized_request(url) do |response, playlist|
+    make_authorized_request(url) do |response, _playlist|
       return JSON.parse(response.body, object_class: OpenStruct).name
     end
   end

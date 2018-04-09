@@ -23,10 +23,10 @@ class PlaylistsController < ApplicationController
         user_id = full_uri[2]
         spotify_id = full_uri[4]
         Playlist.create(
-              name: PlaylistAPIClient.get_playlist_name(user_id: user_id, spotify_id: spotify_id),
-              user_id: user_id,
-              spotify_id: spotify_id
-            )
+          name: PlaylistAPIClient.get_playlist_name(user_id: user_id, spotify_id: spotify_id),
+          user_id: user_id,
+          spotify_id: spotify_id
+        )
       end
     else
       Playlist.create(name: params[:playlist][:name], spotify_id: params[:playlist][:spotify_id])

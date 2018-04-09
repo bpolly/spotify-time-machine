@@ -24,9 +24,8 @@ class PlaylistVersionsController < ApplicationController
     result = UserAPIClient.save_playlist_version_to_user_profile(
       user_id: spotify_user_id,
       access_token: user_access_token,
-      playlist_version: @playlist_version)
-    if result
-      respond_to { |format| format.js }
-    end
+      playlist_version: @playlist_version
+    )
+    respond_to { |format| format.js } if result
   end
 end

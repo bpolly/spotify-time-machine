@@ -1,0 +1,32 @@
+AllCops:
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/**/*
+    - script/**/*
+    - vendor/**/*
+
+Rails:
+  Enabled: true
+
+Metrics/LineLength:
+  Max: 100
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 100
+  Exclude:
+    - app/models/playlist_api_client.rb
+    - app/models/user_api_client.rb
+
+RSpec/NestedGroups:
+  Enabled: true
+  Max: 5
+
+RSpec/SubjectStub:
+  Enabled: false
+
+Rails/HasAndBelongsToMany:
+  Enabled: false
