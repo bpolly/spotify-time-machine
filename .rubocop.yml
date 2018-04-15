@@ -1,4 +1,5 @@
 AllCops:
+  TargetRubyVersion: 2.3.3
   Exclude:
     - bin/**/*
     - config/**/*
@@ -15,21 +16,20 @@ Metrics/LineLength:
 Metrics/AbcSize:
   Max: 17
 
+Metrics/MethodLength:
+  Max: 12
+
 Style/Documentation:
   Enabled: false
 
-Metrics/ClassLength:
+Metrics/ModuleLength:
   Max: 100
   Exclude:
     - app/models/playlist_api_client.rb
     - app/models/user_api_client.rb
 
-RSpec/NestedGroups:
-  Enabled: true
-  Max: 5
-
-RSpec/SubjectStub:
+Rails/HasAndBelongsToMany:
   Enabled: false
 
-Rails/HasAndBelongsToMany:
+Style/FrozenStringLiteralComment:
   Enabled: false

@@ -2,22 +2,21 @@ module PlaylistAPIClient
   include HTTParty
   MAX_RETRY_COUNT = 3
 
-  def self.make_authorized_request(url, *objects)
+  def self.make_authorized_request(url)
     token = get_token
 
     (0...MAX_RETRY_COUNT).each do |_retry_count|
       response = HTTParty.get(url, headers: { 'Authorization' => "Bearer #{token}" })
-
-      return yield(response, *objects) if response.success?
+      return response if response.success?
       token = get_token(force: true)
     end
+    false
   end
 
   def self.create_new_playlist_version(playlist)
     url = "https://api.spotify.com/v1/users/#{playlist.user_id}/playlists/#{playlist.spotify_id}"
-    make_authorized_request(url, playlist) do |response|
-      save_playlist_info(response, playlist)
-    end
+    response = make_authorized_request(url)
+    save_playlist_info(response, playlist) if response
   end
 
   def self.get_token(force: false)
@@ -42,21 +41,9 @@ module PlaylistAPIClient
       return if no_new_updates?(playlist, playlist_items)
 
       # Create new version since there are updates
-      playlist_version = playlist.versions.create
+      create_playlist_version(playlist: playlist, playlist_response: parsed_response)
 
-      # Save playlist artwork
-      playlist_artwork_url = parsed_response.images.first.url
-      playlist_version.update(
-        artwork_url: upload_image_to_s3(
-          playlist_artwork_url,
-          "playlist-version-#{playlist_version.id}"
-        ),
-        description: parsed_response.description,
-        followers: parsed_response.followers.to_i
-      )
-
-      # For each track, make new song record if necessary
-      save_artists_and_songs_for_playlist_version(
+      add_songs_to_playlist_version(
         playlist_version: playlist_version,
         playlist_items: playlist_items
       )
@@ -79,12 +66,11 @@ module PlaylistAPIClient
 
   def self.get_playlist_name(user_id:, spotify_id:)
     url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_id}"
-    make_authorized_request(url) do |response, _playlist|
-      return JSON.parse(response.body, object_class: OpenStruct).name
-    end
+    response = make_authorized_request(url)
+    return JSON.parse(response.body, object_class: OpenStruct).name if response
   end
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def self.save_artists_and_songs_for_playlist_version(playlist_version:, playlist_items:)
     playlist_items.each_with_index do |playlist_item, position|
       track = playlist_item.track
@@ -111,6 +97,22 @@ module PlaylistAPIClient
 
       # add created song to version with position
       playlist_version.playlist_version_songs.create(song: song, position: position)
+    end
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def self.create_playlist_version!(playlist:, playlist_response:)
+    playlist_version = playlist.versions.create!(
+      description: playlist_response.description,
+      followers: playlist_response.followers.to_i
+    )
+
+    # Save playlist artwork
+    playlist_version.tap do |pv|
+      pv.update!(artwork_url: upload_image_to_s3(
+        playlist_response.images.first.url,
+        "playlist-version-#{playlist_version.id}"
+      ))
     end
   end
 
