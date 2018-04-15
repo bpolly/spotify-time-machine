@@ -78,7 +78,7 @@ module PlaylistAPIClient
 
         # create/find artists and associate them to song
         track.artists.each do |artist|
-          song.artists.find_or_create_by(
+          song.artists << Artist.find_or_create_by(
             name: artist.name,
             spotify_id: artist.id,
             spotify_uri: artist.uri
