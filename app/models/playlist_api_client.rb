@@ -24,16 +24,12 @@ module PlaylistAPIClient
     cache = Redis.new
     existing_token = cache.get('spotify_token')
     return existing_token if existing_token && !force
-
-    client_id = ENV['SPOTIFY_CLIENT_ID']
-    client_secret = ENV['SPOTIFY_CLIENT_SECRET']
-    auth = { username: client_id, password: client_secret }
+    auth = { username: ENV['SPOTIFY_CLIENT_ID'], password: ENV['SPOTIFY_CLIENT_SECRET'] }
     response = HTTParty.post('https://accounts.spotify.com/api/token',
                              basic_auth: auth,
                              body: { grant_type: 'client_credentials' })
     new_token = response.parsed_response.fetch('access_token')
-    cache.set('spotify_token', new_token)
-    cache.quit
+    cache.set('spotify_token', new_token) && cache.quit
     new_token
   end
 
@@ -60,32 +56,10 @@ module PlaylistAPIClient
       )
 
       # For each track, make new song record if necessary
-      playlist_items.each_with_index do |playlist_item, position|
-        track = playlist_item.track
-        album_id = track.album.id
-        album_art_link = track.album.images.last.url
-
-        song = Song.find_or_create_by(
-          name: track.name,
-          spotify_id: track.id,
-          explicit: track.explicit,
-          duration_ms: track.duration_ms,
-          spotify_uri: track.uri,
-          artwork_url: upload_image_to_s3(album_art_link, album_id)
-        )
-
-        # create/find artists and associate them to song
-        track.artists.each do |artist|
-          song.artists.find_or_create_by(
-            name: artist.name,
-            spotify_id: artist.id,
-            spotify_uri: artist.uri
-          )
-        end
-
-        # add created song to version with position
-        playlist_version.playlist_version_songs.create(song: song, position: position)
-      end
+      save_artists_and_songs_for_playlist_version(
+        playlist_version: playlist_version,
+        playlist_items: playlist_items
+      )
     end
   end
 
@@ -107,6 +81,36 @@ module PlaylistAPIClient
     url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_id}"
     make_authorized_request(url) do |response, _playlist|
       return JSON.parse(response.body, object_class: OpenStruct).name
+    end
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def self.save_artists_and_songs_for_playlist_version(playlist_version:, playlist_items:)
+    playlist_items.each_with_index do |playlist_item, position|
+      track = playlist_item.track
+      album_id = track.album.id
+      album_art_link = track.album.images.last.url
+
+      song = Song.find_or_create_by(
+        name: track.name,
+        spotify_id: track.id,
+        explicit: track.explicit,
+        duration_ms: track.duration_ms,
+        spotify_uri: track.uri,
+        artwork_url: upload_image_to_s3(album_art_link, album_id)
+      )
+
+      # create/find artists and associate them to song
+      track.artists.each do |artist|
+        song.artists << Artist.find_or_create_by(
+          name: artist.name,
+          spotify_id: artist.id,
+          spotify_uri: artist.uri
+        )
+      end
+
+      # add created song to version with position
+      playlist_version.playlist_version_songs.create(song: song, position: position)
     end
   end
 
