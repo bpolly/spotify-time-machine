@@ -33,12 +33,10 @@ gem 'simple_form'
 gem 'turbolinks', '~> 5'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'pry-byebug'
-  # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'factory_bot_rails'
   gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
+  gem 'pry-byebug'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
 end

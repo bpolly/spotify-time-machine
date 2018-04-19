@@ -36,8 +36,9 @@
     .column
       .box
         %table#songs-table.table.is-fullwidth
-          - @songs.each do |song|
+          - @songs.each_with_index do |song, position|
             %tr
+              %td.song-position= position
               %td.song-artwork-td
                 = link_to "https://open.spotify.com/track/#{song.spotify_id}", class: 'no-highlight', target: "_blank" do
                   %img.song-list-artwork{ src: song.artwork_url }
