@@ -4,7 +4,7 @@ class PlaylistVersion < ApplicationRecord
   alias_attribute :songs, :playlist_version_songs
 
   def formatted_date
-    created_at.strftime("%B %d, %Y")
+    created_at.strftime('%B %d, %Y')
   end
 
   def save_name

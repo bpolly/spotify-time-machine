@@ -8,7 +8,7 @@
               %img{ src: @playlist_version.artwork_url }
         .column.is-full-desktop.is-four-fifths-tablet.is-four-fifths-mobile
           .box#playlist-info-box
-            %h1= @playlist.name
+            %h1= @playlist_version.playlist.name
             %h1
               = @playlist_version.description
             %h1
@@ -19,7 +19,7 @@
               = @playlist_version.followers
         .column.is-full-desktop
           - if connected_to_spotify?
-            = link_to save_to_profile_playlist_version_path(@playlist, @playlist_version), method: :post, remote: true, class: 'button is-outlined is-white no-highlight', id: 'save-playlist-btn' do
+            = link_to save_to_profile_playlist_version_path(@playlist_version.playlist, @playlist_version), method: :post, remote: true, class: 'button is-outlined is-white no-highlight', id: 'save-playlist-btn' do
               %span.icon.is-small
                 %i.fab.fa-spotify
               %span Save Playlist
@@ -30,14 +30,15 @@
           %nav.panel
             %p.panel-heading
               Versions
-            - @playlist.versions.order(created_at: :desc).each do |version|
+            - @playlist_version.playlist.versions.order(created_at: :desc).each do |version|
               .panel-block
-                = link_to version.formatted_date, playlist_version_path(@playlist, version)
+                = link_to version.formatted_date, playlist_version_path(@playlist_version.playlist, version)
     .column
       .box
         %table#songs-table.table.is-fullwidth
-          - @songs.each do |song|
+          - @songs.each_with_index do |song, position|
             %tr
+              %td.song-position= position
               %td.song-artwork-td
                 = link_to "https://open.spotify.com/track/#{song.spotify_id}", class: 'no-highlight', target: "_blank" do
                   %img.song-list-artwork{ src: song.artwork_url }

@@ -1,9 +1,9 @@
 class Playlist < ApplicationRecord
-  has_many :playlist_versions
+  has_many :playlist_versions, dependent: :destroy
   alias_attribute :versions, :playlist_versions
-  validates :spotify_id, uniqueness: true
+  validates :spotify_id, uniqueness: { case_sensitive: false }
 
   def version_saved_today?
-    versions.where(created_at: Time.now.beginning_of_day..Time.now.end_of_day).exists?
+    versions.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).exists?
   end
 end

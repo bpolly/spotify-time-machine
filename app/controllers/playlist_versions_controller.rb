@@ -6,12 +6,15 @@ class PlaylistVersionsController < ApplicationController
   end
 
   def show
-    @playlist = Playlist.find(params[:playlist_id])
     @playlist_version = PlaylistVersion.find(params[:id])
-    @songs = PlaylistVersionSong.includes(song: :artists).where(playlist_version: @playlist_version).order(position: :asc)
+    @songs = PlaylistVersionSong
+             .includes(song: :artists)
+             .where(playlist_version: @playlist_version)
+             .order(position: :asc)
 
-    breadcrumb @playlist.name, playlist_path(@playlist)
-    breadcrumb @playlist_version.formatted_date, playlist_version_path(@playlist, @playlist_version)
+    breadcrumb @playlist_version.playlist.name, playlist_path(@playlist_version.playlist)
+    breadcrumb @playlist_version.formatted_date,
+               playlist_version_path(@playlist_version.playlist, @playlist_version)
   end
 
   def new
@@ -24,9 +27,8 @@ class PlaylistVersionsController < ApplicationController
     result = UserAPIClient.save_playlist_version_to_user_profile(
       user_id: spotify_user_id,
       access_token: user_access_token,
-      playlist_version: @playlist_version)
-    if result
-      respond_to { |format| format.js }
-    end
+      playlist_version: @playlist_version
+    )
+    respond_to { |format| format.js } if result
   end
 end

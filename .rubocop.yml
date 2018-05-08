@@ -1,0 +1,35 @@
+AllCops:
+  TargetRubyVersion: 2.3.3
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/**/*
+    - script/**/*
+    - vendor/**/*
+
+Rails:
+  Enabled: true
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/AbcSize:
+  Max: 17
+
+Metrics/MethodLength:
+  Max: 13
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Max: 100
+  Exclude:
+    - app/models/playlist_api_client.rb
+    - app/models/user_api_client.rb
+
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
