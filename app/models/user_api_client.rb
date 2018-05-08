@@ -30,6 +30,30 @@ module UserAPIClient
 
   # rubocop:disable Metrics/MethodLength
   def self.save_playlist_version_to_user_profile(user_id:, access_token:, playlist_version:)
+    spotify_playlist_id = create_playlist_for_user(
+      user_id: user_id,
+      access_token: access_token,
+      playlist_version: playlist_version
+    )
+
+    return unless spotify_playlist_id
+
+    save_tracks_to_playlist(
+      playlist_version: playlist_version,
+      spotify_playlist_id: spotify_playlist_id,
+      access_token: access_token,
+      user_id: user_id
+    )
+    save_artwork_to_playlist(
+      playlist_version: playlist_version,
+      spotify_playlist_id: spotify_playlist_id,
+      access_token: access_token,
+      user_id: user_id
+    )
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def self.create_playlist_for_user(user_id:, access_token:, playlist_version:)
     url = "https://api.spotify.com/v1/users/#{user_id}/playlists"
     headers = {
       'Authorization' => "Bearer #{access_token}",
@@ -40,22 +64,8 @@ module UserAPIClient
       description: playlist_version.description
     }
     response = HTTParty.post(url, headers: headers, body: body.to_json)
-    playlist_id = JSON.parse(response.body, object_class: OpenStruct).id
-    return unless playlist_id
-    save_tracks_to_playlist(
-      playlist_version: playlist_version,
-      playlist_id: playlist_id,
-      access_token: access_token,
-      user_id: user_id
-    )
-    save_artwork_to_playlist(
-      playlist_version: playlist_version,
-      playlist_id: playlist_id,
-      access_token: access_token,
-      user_id: user_id
-    )
+    JSON.parse(response.body, object_class: OpenStruct).id
   end
-  # rubocop:enable Metrics/MethodLength
 
   def self.get_spotify_user_id(access_token)
     url = 'https://api.spotify.com/v1/me'
@@ -76,8 +86,8 @@ module UserAPIClient
     JSON.parse(response.body, object_class: OpenStruct).access_token
   end
 
-  def self.save_tracks_to_playlist(playlist_version:, playlist_id:, access_token:, user_id:)
-    url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{playlist_id}/tracks"
+  def self.save_tracks_to_playlist(playlist_version:, spotify_playlist_id:, access_token:, user_id:)
+    url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_playlist_id}/tracks"
     headers = {
       'Authorization' => "Bearer #{access_token}",
       'Content-Type' => 'application/json'
@@ -87,8 +97,8 @@ module UserAPIClient
   end
 
   # rubocop:disable Security/Open
-  def self.save_artwork_to_playlist(playlist_version:, playlist_id:, access_token:, user_id:)
-    url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{playlist_id}/images"
+  def self.save_artwork_to_playlist(playlist_version:, spotify_playlist_id:, access_token:, user_id:)
+    url = "https://api.spotify.com/v1/users/#{user_id}/playlists/#{spotify_playlist_id}/images"
     headers = {
       'Authorization' => "Bearer #{access_token}",
       'Content-Type' => 'image/jpeg'
