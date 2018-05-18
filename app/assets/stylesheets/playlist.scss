@@ -1,1 +1,37 @@
 @import "utilities/variables";
+
+#homepage {
+  min-width: 1105px;
+  .homepage {
+    &-title {
+      color: white;
+      text-align: center;
+      font-family: 'Bungee', cursive;
+    }
+
+    &-subtitle {
+      color: #bbb;
+      text-align: center;
+    }
+
+    &-row {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #8480ff;;
+      border-top: 1px solid #8480ff;;
+      height: 200px;
+      padding: 0 20px;
+      background: #38438b;
+
+      &-title {
+        font-size: 1.7rem;
+    background-image: linear-gradient(to right top, #38438b, #944b94, #d75a88, #ff7e71, #ffb25f, #ffeb68);
+        // background-color: #05daff;
+        color: #363636;
+        font-family: 'Bungee', cursive;
+        height: 100%;
+        width: 200px;
+        padding: 10px 0px 0px 12px;
+      }
+    }
+  }
+}
