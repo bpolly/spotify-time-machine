@@ -1,1 +1,7 @@
 = @artist.name
+Recent Playlist Appearances
+%table
+  - @playlist_versions.each do |pv|
+    %tr
+      %td
+        = link_to pv.save_name, playlist_version_path(pv.playlist, pv)
