@@ -80,7 +80,7 @@ class PlaylistVersionCreator
     return false if playlist.versions.empty?
     return false if found_playlist_items.any? { |item| item.added_at.nil? }
     found_playlist_items.each_with_index do |item, position|
-      if last_playlist_version.songs.find_by(position: position).spotify_id != item.track.spotify_id
+      if last_playlist_version.songs.find_by(position: position).spotify_id != item.track.id
         return false
       end
     end

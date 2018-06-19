@@ -17,8 +17,11 @@ class PlaylistsController < ApplicationController
   end
 
   def create
-    create_with_full_uri if params[:playlist][:spotify_full_uri]
-    Playlist.create(name: params[:playlist][:name], spotify_id: params[:playlist][:spotify_id])
+    if params[:playlist][:spotify_full_uri]
+      create_with_full_uri 
+    else
+      Playlist.create(name: params[:playlist][:name], spotify_id: params[:playlist][:spotify_id])
+    end
     flash[:success] = 'Playlist created'
     redirect_back fallback_location: root_path
   end
@@ -33,7 +36,8 @@ class PlaylistsController < ApplicationController
       Playlist.create(
         name: PlaylistAPIClient.get_playlist_name(user_id: user_id, spotify_id: spotify_id),
         user_id: user_id,
-        spotify_id: spotify_id
+        spotify_id: spotify_id,
+        spotify_uri: uri
       )
     end
   end
