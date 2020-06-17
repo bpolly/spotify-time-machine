@@ -17,7 +17,7 @@
 
 body {
   background: #313131;
-  /* color: white !important; */
+  color: white !important;
   min-height: 100vh;
   background-image: radial-gradient(circle, #3b3b3b, #313131, #272727, #1e1e1e, #151515);
 }
